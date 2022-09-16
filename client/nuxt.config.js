@@ -43,7 +43,6 @@ module.exports = {
     publicRuntimeConfig: {
         siteKey: process.env.SITEKEY,
         secretKey: process.env.SECRETKEY,
-        liffId: process.env.LIFFID,
         liffIdTs: process.env.LIFFID_TIMESTAMP,
         basicAuthUsername: process.env.BASIC_AUTH_USERNAME,
         basicAuthPassword: process.env.BASIC_AUTH_PASSWORD
