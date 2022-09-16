@@ -1,0 +1,67 @@
+stages:
+  - build-stg
+  - deploy-stg
+  - build-prod
+  - deploy-prod
+  
+docker_build_stg:
+  tags:
+    - shell
+  variables:
+    ENV_STAGE: "staging"
+  stage: build-stg
+  only:
+    refs:
+      - stg
+  script:
+    - docker login ${CI_REGISTRY} -u ${CI_REGISTRY_USER} -p ${CI_REGISTRY_PASSWORD}
+    - COMMIT_TIME=$(date +"%Y%m%dT%H%M%S")
+    - docker build -t ${CI_REGISTRY}/${CI_PROJECT_PATH}-${ENV_STAGE}:latest --build-arg SITEKEY=${RECAPTCHA_SITEKEY_STG} --build-arg CLIENT_ID_GOOGLE=${CLIENT_ID_GOOGLE_STG} --build-arg CLIENT_ID_FACEBOOK=${CLIENT_ID_FACEBOOK_STG} --build-arg BASE_URL_BACKEND=${BASE_URL_STG} --build-arg REDIRECT_URI=${REDIRECT_URI_STG} client
+    - docker tag ${CI_REGISTRY}/${CI_PROJECT_PATH}-${ENV_STAGE}:latest ${CI_REGISTRY}/${CI_PROJECT_PATH}-${ENV_STAGE}:${COMMIT_TIME}
+    - docker push ${CI_REGISTRY}/${CI_PROJECT_PATH}-${ENV_STAGE}:latest
+    - docker push ${CI_REGISTRY}/${CI_PROJECT_PATH}-${ENV_STAGE}:${COMMIT_TIME}
+    - echo ${CI_REGISTRY}/${CI_PROJECT_PATH}-${ENV_STAGE}:${COMMIT_TIME}
+    - echo ${RANCHER_STG_ENDPOINT}
+
+rancher_deploy_stg:
+  tags:
+    - shell
+  stage: deploy-stg
+  only:
+    refs:
+      - stg
+  variables:
+    RANCHER_STG_ENDPOINT: https://texus.thaicom.io
+  script:
+    - echo ${RANCHER_STG_ENDPOINT}
+    - curl -u ${RANCHER_STG_USER}:${RANCHER_STG_PASS} -X POST -H 'Accept:application/json' -H 'Content-Type:application/json' ${RANCHER_STG_ENDPOINT}'/v3/project/c-q6vf9:p-pbc6w/workload/deployment:tsa:web-validation-frontend?action=redeploy'
+
+docker_build_prod:
+  tags:
+    - shell
+  variables:
+    ENV_STAGE: "production"
+  stage: build-prod
+  only:
+    refs:
+      - master
+  script:
+    - docker login ${CI_REGISTRY} -u ${CI_REGISTRY_USER} -p ${CI_REGISTRY_PASSWORD}
+    - COMMIT_TIME=$(date +"%Y%m%dT%H%M%S")
+    - docker build -t ${CI_REGISTRY}/${CI_PROJECT_PATH}-${ENV_STAGE}:latest --build-arg SITEKEY=${RECAPTCHA_SITEKEY_PROD} --build-arg CLIENT_ID_GOOGLE=${CLIENT_ID_GOOGLE_PROD} --build-arg CLIENT_ID_FACEBOOK=${CLIENT_ID_FACEBOOK_PROD} --build-arg BASE_URL_BACKEND=${BASE_URL_PROD} --build-arg REDIRECT_URI=${REDIRECT_URI_PROD} client
+    - docker tag ${CI_REGISTRY}/${CI_PROJECT_PATH}-${ENV_STAGE}:latest ${CI_REGISTRY}/${CI_PROJECT_PATH}-${ENV_STAGE}:${COMMIT_TIME}
+    - docker push ${CI_REGISTRY}/${CI_PROJECT_PATH}-${ENV_STAGE}:latest
+    - docker push ${CI_REGISTRY}/${CI_PROJECT_PATH}-${ENV_STAGE}:${COMMIT_TIME}
+    - echo ${CI_REGISTRY}/${CI_PROJECT_PATH}-${ENV_STAGE}:${COMMIT_TIME}
+
+rancher_deploy_prod:
+  tags:
+    - shell
+  stage: deploy-prod
+  when: manual
+  only:
+    refs:
+      - master
+  script:
+    - curl -u ${RANCHER_PROD_USER}:${RANCHER_PROD_PASS} -X POST -H 'Accept:application/json' -H 'Content-Type:application/json' ${RANCHER_PROD_ENDPOINT}'/v3/project/c-q6vf9:p-pbc6w/workload/deployment:tsa-server:web-validation-frontend?action=redeploy'
+    # https://newyork.thaicom.io/p/c-9fb9q:p-sfhvw/workload/deployment:tsa-server:web-validation-frontend

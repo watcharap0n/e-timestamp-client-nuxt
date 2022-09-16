@@ -1,0 +1,23 @@
+version: '3.9'
+
+services:
+
+  app:
+    build: 
+      context: client
+      # args:
+      #   - SITEKEY=6LddfEYhAAAAADasSiipmOoRrB3OSu3udtK4jFs1
+    container_name: e-documents-nuxt
+    restart: always
+    ports:
+      - '4000:4000'
+    environment:
+      - SITEKEY=6LddfEYhAAAAADasSiipmOoRrB3OSu3udtK4jFs1
+      - SECRETKEY=6LddfEYhAAAAABgnUADsj6g7x9WYMMxWMNJG_AnX
+      - HOST=0.0.0.0
+      - BASE_URL=http://localhost:8080
+      - API_VERIFY_EXKASAN=/signature/verify/exkasan
+      - API_UPLOAD_PDF=/signature/file/pdf/base64
+      - REQREFNO=1659405914
+      - LIFFID=1657396403-naMjBRBp
+    command: 'npm run start'

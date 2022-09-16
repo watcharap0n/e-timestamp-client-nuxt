@@ -1,0 +1,12 @@
+client/yarn.lock
+client/node_modules
+client/.nuxt
+.DStore
+.idea
+client/package-lock.json
+.DS_Store
+dist
+client/dist
+client/app/static
+client/nuxt-dist
+client/nuxt-validate-exkasan
