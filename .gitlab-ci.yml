@@ -21,7 +21,6 @@ docker_build_stg:
     - docker push ${CI_REGISTRY}/${CI_PROJECT_PATH}-${ENV_STAGE}:latest
     - docker push ${CI_REGISTRY}/${CI_PROJECT_PATH}-${ENV_STAGE}:${COMMIT_TIME}
     - echo ${CI_REGISTRY}/${CI_PROJECT_PATH}-${ENV_STAGE}:${COMMIT_TIME}
-    - echo ${RANCHER_STG_ENDPOINT}
 
 rancher_deploy_stg:
   tags:
@@ -30,11 +29,9 @@ rancher_deploy_stg:
   only:
     refs:
       - stg
-  variables:
-    RANCHER_STG_ENDPOINT: https://texus.thaicom.io
   script:
     - echo ${RANCHER_STG_ENDPOINT}
-    - curl -u ${RANCHER_STG_USER}:${RANCHER_STG_PASS} -X POST -H 'Accept:application/json' -H 'Content-Type:application/json' ${RANCHER_STG_ENDPOINT}'/v3/project/c-q6vf9:p-pbc6w/workload/deployment:tsa:web-validation-frontend?action=redeploy'
+    - curl -u ${RANCHER_STG_USER}:${RANCHER_STG_PASS} -X POST -H 'Accept:application/json' -H 'Content-Type:application/json' ${RANCHER_STG_ENDPOINT}'/v3/project/c-q6vf9:p-pbc6w/workload/deployment:tsa:web-timestamp-frontend-service?action=redeploy'
 
 docker_build_prod:
   tags:
@@ -63,5 +60,6 @@ rancher_deploy_prod:
     refs:
       - master
   script:
-    - curl -u ${RANCHER_PROD_USER}:${RANCHER_PROD_PASS} -X POST -H 'Accept:application/json' -H 'Content-Type:application/json' ${RANCHER_PROD_ENDPOINT}'/v3/project/c-q6vf9:p-pbc6w/workload/deployment:tsa-server:web-validation-frontend?action=redeploy'
+    - echo deploy master
+    # - curl -u ${RANCHER_PROD_USER}:${RANCHER_PROD_PASS} -X POST -H 'Accept:application/json' -H 'Content-Type:application/json' ${RANCHER_PROD_ENDPOINT}'/v3/project/c-q6vf9:p-pbc6w/workload/deployment:tsa-server:web-validation-frontend?action=redeploy'
     # https://newyork.thaicom.io/p/c-9fb9q:p-sfhvw/workload/deployment:tsa-server:web-validation-frontend
