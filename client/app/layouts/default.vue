@@ -32,7 +32,7 @@
                     depressed
                     rounded
                     text
-                    href="/validate"
+                    href="#"
                 >
                   การตรวจสอบเอกสาร
                 </v-btn>
@@ -41,7 +41,7 @@
                     depressed
                     rounded
                     text
-                    href="/timestamp"
+                    href="#"
                 >
                   การประทับรับรองเวลา
                 </v-btn>
