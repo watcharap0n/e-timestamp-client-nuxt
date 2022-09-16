@@ -17,7 +17,7 @@
         <h3 style="margin-top: 10px;">ระบบประทับรับรองเวลาอิเล็กทรอนิกส์</h3>
       </div>
 
-      <v-card flat>
+      <v-card flat width="350px">
         <v-card
             @mouseenter="dragover = true"
             @mouseleave="dragover = false"
@@ -64,27 +64,62 @@
             </div>
           </v-card-text>
         </v-card>
-        <br>
-        <div class="text-center" v-if="role === 'common'">
-          <v-chip color="red" dark>จำนวนโควต้าที่เหลือ: {{ quota }}</v-chip>
-        </div>
+      </v-card>
 
-        <br>
-        <br>
-        <div style="margin-left: -30px">
-          <recaptcha
-              id="recaptcha"
-              @error="onError"
-              @success="onSuccess"
-              @expired="onExpired"
-          />
-        </div>
+      <br>
+      <div class="text-center" v-if="role === 'common'">
+        <v-chip color="red" dark>จำนวนโควต้าที่เหลือ: {{ quota }}</v-chip>
+      </div>
 
+      <br>
+      <br>
+      <div style="margin-left: -30px">
+        <recaptcha
+            id="recaptcha"
+            @error="onError"
+            @success="onSuccess"
+            @expired="onExpired"
+        />
+      </div>
+
+      <v-card flat>
+        <v-card-text>
+          <v-row justify="center" align="center">
+            <v-checkbox
+                color="lime"
+                v-model="checkbox"
+                dense>
+              <template v-slot:label>
+                <small style="margin-top: 10px">
+                  การประทับรับรองเวลาบนเอกสารดังกล่าว ผู้ใช้บริการยินยอมให้้บริษัทประทับรับรองเวลาบนเอกสารและ
+                  บริษัทยืนยันว่า <br> ไม่ได้มีการเก็บเอกสาร หรือเนื้อหาส่วนหนึ่งส่วนใดไว้ในระบบ
+                  โดยสามารถคลิกเพื่ออ่าน เงื่อนไขการให้บริการ
+                  <v-tooltip bottom>
+                    <template v-slot:activator="{ on }">
+                      <a
+                          target="_blank"
+                          href="https://exkasan.com/privacy.html"
+                          @click.stop
+                          v-on="on"
+                      >
+                        เงื่อนไขการให้บริการ
+                      </a>
+                    </template>
+                    เงื่อนไขการให้บริการ
+                  </v-tooltip>
+                </small>
+              </template>
+            </v-checkbox>
+          </v-row>
+        </v-card-text>
+      </v-card>
+
+      <v-card flat style="margin-top: -10px">
         <v-card-actions>
           <v-row>
             <v-col cols="6" sm="6">
               <v-btn
-                  :disabled="!btnSubmit"
+                  :disabled="!enabledButton"
                   block
                   x-large
                   color="#68E7D6"
@@ -108,15 +143,6 @@
           </v-row>
         </v-card-actions>
       </v-card>
-
-      <v-card-text>
-        <div class="text-center">
-          การประทับรับรองเอกสารดังกล่าว ผู้ใช้บริการยินยอมให้บริษัทตรวจสอบเอกสารและบริษัทยืนยันว่าไม่ได้มีการเก็บเอกสาร
-          <br>
-          หรือเนื้อหาส่วนหนึ่งส่วนใดไว้ในระบบ
-          ในกรณีที่เนื้อหาของเอกสารรั่วไหลไปยังบุคคลภายนอก ทางบริษัทจะไม่รับผิดชอบความเสียหายใดๆทั้งสิ้น
-        </div>
-      </v-card-text>
     </div>
 
     <v-dialog
@@ -157,6 +183,7 @@
         </v-card-actions>
       </v-card>
     </v-dialog>
+
     <v-dialog
         persistent
         width="400px"
@@ -235,6 +262,9 @@ import Overlay from "@/components/Overlay";
 export default {
   data() {
     return {
+      enabledButton: false,
+      recaptcha: false,
+      checkbox: false,
       disabled: false,
       role: '',
       quota: 1,
@@ -246,7 +276,6 @@ export default {
       handleEvent: false,
       basicAuthUsername: this.$config.basicAuthUsername,
       basicAuthPassword: this.$config.basicAuthPassword,
-      btnSubmit: false,
       siteKey: this.$config.siteKey,
       secretKey: this.$config.secretKey,
       liffIdTs: this.$config.liffIdTs,
@@ -274,6 +303,12 @@ export default {
   },
 
   watch: {
+    recaptcha(val) {
+      this.enabledButton = val === true && this.checkbox === true;
+    },
+    checkbox(val) {
+      this.enabledButton = val === true && this.recaptcha === true;
+    },
     channel(val) {
       if (val === 'google') {
         let auth = this.$auth.user
@@ -476,7 +511,6 @@ export default {
             console.error(err);
           })
       this.$recaptcha.reset();
-      this.btnSubmit = false;
       this.spin = false;
     },
 
@@ -518,7 +552,7 @@ export default {
     },
 
     onSuccess(token) {
-      this.btnSubmit = true;
+      this.recaptcha = true
     },
     onExpired() {
       console.log('Expired')
