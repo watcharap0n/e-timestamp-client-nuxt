@@ -37,7 +37,8 @@ module.exports = {
         }
     },
     serverMiddleware: [
-        '~/server-middleware/headers.js'
+        '~/server-middleware/headers.js',
+        '~/server-middleware/logger.js'
     ],
 
     publicRuntimeConfig: {
