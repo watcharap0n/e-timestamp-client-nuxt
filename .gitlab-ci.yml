@@ -16,7 +16,7 @@ docker_build_stg:
   script:
     - docker login ${CI_REGISTRY} -u ${CI_REGISTRY_USER} -p ${CI_REGISTRY_PASSWORD}
     - COMMIT_TIME=$(date +"%Y%m%dT%H%M%S")
-    - docker build -t ${CI_REGISTRY}/${CI_PROJECT_PATH}-${ENV_STAGE}:latest --build-arg SITEKEY=${RECAPTCHA_SITEKEY_STG} --build-arg CLIENT_ID_GOOGLE=${CLIENT_ID_GOOGLE_STG} --build-arg CLIENT_ID_FACEBOOK=${CLIENT_ID_FACEBOOK_STG} --build-arg BASE_URL_BACKEND=${BASE_URL_STG} --build-arg REDIRECT_URI=${REDIRECT_URI_STG} client
+    - docker build -t ${CI_REGISTRY}/${CI_PROJECT_PATH}-${ENV_STAGE}:latest --build-arg SITEKEY=${RECAPTCHA_SITEKEY_STG} --build-arg CLIENT_ID_GOOGLE=${CLIENT_ID_GOOGLE_STG} --build-arg CLIENT_ID_FACEBOOK=${CLIENT_ID_FACEBOOK_STG} --build-arg BASE_URL_BACKEND=${BASE_URL_STG} --build-arg REDIRECT_URI=${REDIRECT_URI_STG} --build-arg HEADER_X_TOKEN=${HEADER_X_TOKEN} client
     - docker tag ${CI_REGISTRY}/${CI_PROJECT_PATH}-${ENV_STAGE}:latest ${CI_REGISTRY}/${CI_PROJECT_PATH}-${ENV_STAGE}:${COMMIT_TIME}
     - docker push ${CI_REGISTRY}/${CI_PROJECT_PATH}-${ENV_STAGE}:latest
     - docker push ${CI_REGISTRY}/${CI_PROJECT_PATH}-${ENV_STAGE}:${COMMIT_TIME}
