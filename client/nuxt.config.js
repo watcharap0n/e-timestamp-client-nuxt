@@ -173,6 +173,11 @@ module.exports = {
 
     axios: {
         proxy: true,
+        headers: {
+            common: {
+                'X-Token': process.env.HEADER_X_TOKEN
+            }
+        }
     },
     proxy: {
         '/captcha-api/': {
