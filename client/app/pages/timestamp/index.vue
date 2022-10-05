@@ -391,10 +391,13 @@ export default {
     },
 
     async initializedGoogle() {
-      let provider = new this.$fireModule.auth.GoogleAuthProvider();
-      let authData = await this.$fire.auth.signInWithPopup(provider)
-      console.log(authData)
-      location.reload();
+      try {
+        let provider = new this.$fireModule.auth.GoogleAuthProvider();
+        let authData = await this.$fire.auth.signInWithPopup(provider)
+        location.reload();
+      } catch {
+        console.log('popup close')
+      }
     },
 
     async quotaProfile() {
