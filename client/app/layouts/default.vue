@@ -72,7 +72,7 @@
                   :hidden="showIcon"
                   v-if="channel === 'google'">
                 <img
-                    :src="user.picture"
+                    :src="user.photoURL"
                     alt="src"
                 >
               </v-avatar>
@@ -93,11 +93,11 @@
               <div class="mx-auto text-center">
                 <v-avatar>
                   <img
-                      :src="user.picture"
+                      :src="user.photoURL"
                       alt="src"
                   >
                 </v-avatar>
-                <h3>{{ user.name }}</h3>
+                <h3>{{ user.displayName }}</h3>
                 <p class="text-caption mt-1">
                   {{ user.email }}
                 </p>
@@ -109,7 +109,7 @@
                     x-small
                     @click="showUID = !showUID"
                 >
-                  <div v-if="showUID">{{ user.sub }}</div>
+                  <div v-if="showUID">{{ user.uid }}</div>
                   <div v-else>
                     UID
                   </div>
@@ -217,7 +217,7 @@ export default {
 
 
     async logout() {
-      await this.$auth.logout();
+      await this.$fire.auth.signOut()
       await liff.logout();
       location.reload();
     },
