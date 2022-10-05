@@ -114,7 +114,7 @@ module.exports = {
     },
 
     plugins: [
-        '~/plugins/notifier.js'
+        '~/plugins/notifier.js',
     ],
 
     buildModules: [
@@ -127,6 +127,29 @@ module.exports = {
         '@nuxtjs/auth-next',
         'bootstrap-vue/nuxt',
         'vue-sweetalert2/nuxt',
+        [
+            '@nuxtjs/firebase',
+            {
+                config: {
+                    apiKey: process.env.APIKEY,
+                    authDomain: process.env.AUTHDOMAIN,
+                    databaseURL: process.env.DATABASEURL,
+                    projectId: processs.env.PROJECTID,
+                    storageBucket: process.env.STORAGEBUCKET,
+                    messagingSenderId: process.env.MESSAGINGSENDERID,
+                    appId: process.env.APPID,
+                    measurementId: process.env.MEASUREMENTID
+                },
+                services: {
+                    auth: {
+                        initialize: {
+                            onAuthStateChangedAction: 'onAuthStateChanged',
+                        },
+                        ssr: true,
+                    },
+                }
+            }
+        ],
         [
             '@nuxtjs/recaptcha',
             {
@@ -149,19 +172,19 @@ module.exports = {
                         url: `/timestamp/auth/csrftoken`
                     }
                 }
-            },
-            google: {
-                clientId: process.env.CLIENT_ID_GOOGLE,
-                scope: ['profile', 'email'],
-                codeChallengeMethod: '',
-                responseType: 'token id_token',
-                redirectUri: process.env.REDIRECT_URI
-            },
+            }
         },
         redirect: {
             callback: '/timestamp',
             logout: '/timestamp',
         }
+    },
+
+    pwa: {
+        workbox: {
+            importScripts: ['/firebase-auth-sw.js'],
+            dev: process.env.NODE_ENV === 'development',
+        },
     },
 
     gtm: {
