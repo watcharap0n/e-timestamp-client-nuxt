@@ -209,7 +209,6 @@
                  color="white"
                  style="margin-bottom: 10px;"
                  @click="initializedGoogle"
-                 disabled
           >
             <i class="fa-brands fa-google"></i>
             &nbsp;เข้าสู่ระบบด้วย Google
@@ -311,12 +310,12 @@ export default {
     },
     channel(val) {
       if (val === 'google') {
-        let auth = this.$auth.user
+        let auth = this.$fire.auth.currentUser
         this.authUser.issue = 'google'
-        this.authUser.display_name = auth.name
+        this.authUser.display_name = auth.displayName
         this.authUser.email = auth.email
-        this.authUser.picture_url = auth.picture
-        this.authUser.user_id = auth.sub
+        this.authUser.picture_url = auth.photoURL
+        this.authUser.user_id = auth.uid
         this.initQuotaProfile()
       } else {
         this.authUser.issue = 'line'
@@ -361,14 +360,14 @@ export default {
         this.dialogLogin = true
       }
     })
-    if (this.$auth.loggedIn) {
-      await this.$parent.$emit('authUser', this.$auth.user);
-      await this.$parent.$emit('issue', this.$auth.strategy.name)
+    if (this.$fire.auth.currentUser) {
+      await this.$parent.$emit('authUser', this.$fire.auth.currentUser);
+      await this.$parent.$emit('issue', 'google')
       this.$nuxt.$emit('session', false)
       this.dialogLogin = false;
-      this.channel = this.$auth.strategy.name
+      this.channel = 'google'
     }
-    if (!liff.isLoggedIn() && !this.$auth.loggedIn) {
+    if (!liff.isLoggedIn() && !this.$fire.auth.currentUser) {
       this.$nuxt.$emit('session', true)
       this.dialogLogin = true
     }
@@ -392,7 +391,14 @@ export default {
     },
 
     async initializedGoogle() {
-      await this.$auth.loginWith('google', {params: {prompt: "select_account"}})
+      try {
+        let provider = new this.$fireModule.auth.GoogleAuthProvider();
+        let authData = await this.$fire.auth.signInWithPopup(provider)
+        console.log(authData)
+        location.reload();
+      } catch {
+        console.log('popup close')
+      }
     },
 
     async quotaProfile() {
