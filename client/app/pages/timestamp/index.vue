@@ -401,7 +401,7 @@ export default {
     },
 
     async quotaProfile() {
-      const path = `/timestamp/profile/read/${this.authUser.user_id}?issue=${this.authUser.issue}`;
+      const path = `/timestamp/profile/read/${this.authUser.user_id}`;
       const config = {
         auth: {
           username: this.basicAuthUsername,
@@ -498,6 +498,7 @@ export default {
       }
       let formData = new FormData();
       formData.append('file', this.file);
+      formData.append('user_id', this.authUser.user_id)
 
       await this.$axios.post(path, formData, config)
           .then((res) => {
