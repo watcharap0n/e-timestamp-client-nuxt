@@ -341,6 +341,7 @@ export default {
   },
 
   async created() {
+    await this.$auth.loginWith('cookie')
     this.overlay = true
     await liff.init({liffId: this.liffIdTs}, () => {
       if (liff.isLoggedIn()) {
@@ -372,7 +373,6 @@ export default {
       this.dialogLogin = true
     }
     this.overlay = false
-    await this.$auth.loginWith('cookie')
   },
 
   methods: {
