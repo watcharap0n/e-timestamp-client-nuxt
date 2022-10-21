@@ -302,6 +302,17 @@ export default {
   },
 
   watch: {
+    file(val) {
+      if (val) {
+        if (val.type !== 'application/pdf') {
+          this.$notifier.showMessage({
+            color: 'red',
+            content: 'กรุณาอัพโหลดไฟล์ที่เป็น PDF เท่านั้น'
+          })
+          this.file = null
+        }
+      }
+    },
     recaptcha(val) {
       this.enabledButton = val === true && this.checkbox === true;
     },
@@ -547,7 +558,7 @@ export default {
         } else if (e.dataTransfer.files[0].type !== 'application/pdf') {
           this.$notifier.showMessage({
             color: 'red',
-            content: 'ต้องเป็นไฟล์ PDF เท่านั้น'
+            content: 'กรุณาอัพโหลดไฟล์ที่เป็น PDF เท่านั้น'
           })
         } else {
           this.file = e.dataTransfer.files[0]
