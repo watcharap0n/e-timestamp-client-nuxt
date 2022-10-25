@@ -1,4 +1,4 @@
-const ALLOWED_HOSTS = ['*.google-analytics.com', '*.doubleclick.net', '*.googleusercontent.com', '*.firebaseio.com']
+const ALLOWED_HOSTS = ['*.google-analytics.com', '*.doubleclick.net', '*.googleusercontent.com', '*.firebaseio.com', '*.recaptcha.net']
 
 module.exports = {
     render: {
@@ -9,8 +9,8 @@ module.exports = {
             unsafeInlineCompatiblity: true,
             policies: {
                 'default-src': ["'self'", 'https:', ...ALLOWED_HOSTS],
-                'script-src': ["'self'", "'strict-dynamic'", 'https:'],
-                'style-src': ["'self'", "'strict-dynamic'", 'https:'],
+                'script-src': ["'self'", "'strict-dynamic'", 'https:', ...ALLOWED_HOSTS],
+                'style-src': ["'self'", "'strict-dynamic'", 'https:', ...ALLOWED_HOSTS],
                 'frame-src': [],
                 'object-src': ["'none'"],
                 'base-uri': ["'self'"]
@@ -80,9 +80,9 @@ module.exports = {
     head: {
         titleTemplate: 'Exkasan',
         meta: [
-            {charset: 'utf-8'},
+            {charset: 'utf-16'},
             {name: 'viewport', content: 'width=device-width, initial-scale=1'},
-            {hid: 'description', name: 'description', content: 'Meta description'},
+            {hid: 'description', name: 'description', content: 'Exkasan'},
         ],
 
         script: [
