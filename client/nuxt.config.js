@@ -1,4 +1,25 @@
+const ALLOWED_HOSTS = ['*.google-analytics.com', '*.doubleclick.net', '*.googleusercontent.com', '*.firebaseio.com']
+
 module.exports = {
+    render: {
+        csp: {
+            reportOnly: false,
+            addMeta: true,
+            hashAlgorithm: 'sha256',
+            unsafeInlineCompatiblity: true,
+            policies: {
+                'default-src': ["'self'", 'https:', ...ALLOWED_HOSTS],
+                'script-src': ["'self'", "'strict-dynamic'", 'https:'],
+                'style-src': ["'self'", "'strict-dynamic'", 'https:'],
+                'frame-src': [],
+                'object-src': ["'none'"],
+                'base-uri': ["'self'"]
+                /* "report-uri": [
+                  "https://sentry.io/api/<project>/security/?sentry_key=<key>",
+                ], */
+            }
+        }
+    },
     build: {
         build: {
             analyze: {
