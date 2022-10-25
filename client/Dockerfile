@@ -1,4 +1,4 @@
-FROM node:14.20.0-bullseye-slim
+FROM node:fermium-bullseye-slim
 # FROM node:16.17.0
 ARG SITEKEY
 ARG CLIENT_ID_GOOGLE
